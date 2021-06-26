@@ -18,7 +18,7 @@
                 <ColumnDefinition Width="30"></ColumnDefinition>
                 <ColumnDefinition Width="31"></ColumnDefinition>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="31"></ColumnDefinition>
+                <ColumnDefinition Width="115"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <Button Click="Button_Click" Content="←" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="24" Height="23" Background="White" BorderBrush="#F94552" BorderThickness="1" FontSize="18" Margin="2,3,2,4" Grid.Column="1"/>
@@ -26,17 +26,25 @@
             <Button Click="Button_Click_1" Content="⟳" Grid.Column="3" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="24" Height="23" Background="White" BorderBrush="#F94552" BorderThickness="1" FontSize="18" Margin="2,3,5,4"/>
             <Button Click="Button_Click_2" Content="⌂" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="24" Height="23" Background="White" BorderBrush="#F94552" BorderThickness="1" FontSize="18" Margin="2,3,3,4"/>
 
-            <TextBox x:Name="AddressBar" Grid.Column="4" KeyDown="AddressBar_KeyDown" GotFocus="AddressBar_GotFocus" TextAlignment="Center" Background="White" BorderBrush="#F94552" BorderThickness="1" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,4"/>
+            <TextBox x:Name="AddressBar" Grid.Column="4" KeyDown="AddressBar_KeyDown" GotFocus="AddressBar_GotFocus" TextAlignment="Center" Background="White" BorderBrush="#F94552" BorderThickness="1" FontSize="15" FontWeight="SemiBold" Margin="0,3,10,4"/>
 
-            <Button x:Name="hBTN" Click="Button_Click_3" MouseRightButtonUp="Button_MouseRightButtonUp" Content="H" Grid.Column="5" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="24" Height="23" Background="White" BorderBrush="#F94552" BorderThickness="1" Margin="5,3,2,4">
+            <Button x:Name="hBTN" Click="Button_Click_3" MouseRightButtonUp="Button_MouseRightButtonUp" Content="H" Grid.Column="5" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="24" Height="23" Background="White" BorderBrush="#F94552" BorderThickness="1" Margin="81,3,10,4">
                 <Button.ContextMenu>
                     <ContextMenu x:Name="Menu"></ContextMenu>
                 </Button.ContextMenu>
             </Button>
 
+            <TabControl x:Name="tabControl" SelectionChanged="tabControl_SelectionChanged" HorizontalAlignment="Left" Height="472" Margin="2,31,0,-473" VerticalAlignment="Top" Width="756" Grid.ColumnSpan="6">
+                <TabItem Header="DefaultTab" BorderThickness="0" Margin="-2,-2,-2,0">
+                    <cefSharp:ChromiumWebBrowser x:Name="defaultBrowser" Address="https://www.google.com" Padding="0" Margin="-3" Height="{Binding SystemParameters.PrimaryScreenHeight}" Width="{Binding SystemParameters.PrimaryScreenWidth}"/>
+                </TabItem>
+            </TabControl>
+
+            <Button x:Name="AddTab" Content="+"  Height="23" VerticalAlignment="Top" Click="AddTab_Click" Background="White" BorderBrush="#F94552" BorderThickness="1" FontSize="18" Margin="23,3,68,0" Grid.Column="5"/>
+            <Button x:Name="removeButton" Click="removeButton_Click" Content="-" Height="23" VerticalAlignment="Top"  Background="White" BorderBrush="#F94552" BorderThickness="1" FontSize="18" Grid.Column="5" Margin="52,3,39,0"/>
+
         </Grid>
 
         <Border BorderThickness="1" BorderBrush="Gray"/>
-        <cefSharp:ChromiumWebBrowser x:Name="Chrome" Address="Reddit.com" Margin="0,0,0,15" Grid.Row="1"/>
     </Grid>
 </Window>

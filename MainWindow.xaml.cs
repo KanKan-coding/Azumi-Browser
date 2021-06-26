@@ -28,6 +28,10 @@ namespace Azumi_Browser
         List<string> WebPages;
         int Current = 0;
 
+        int tabCount = 0;
+        TabItem CurrentTabItem = null;
+        ChromiumWebBrowser currentBrowserShowing = null;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -42,14 +46,14 @@ namespace Azumi_Browser
         void GoHome()
         {
             AddressBar.Text = "www.google.com";
-            Chrome.Address = "www.Google.com";
+            currentBrowserShowing.Address = "www.Google.com";
             WebPages.Add("www.google.com");
         }
 
         void LoadWebPages(string Link, bool addToList = true)
         {
             AddressBar.Text = Link;
-            Chrome.Address = Link;
+            currentBrowserShowing.Address = Link;
 
             MenuItem items = new MenuItem();
             items.Click += MenuClicked;
@@ -62,6 +66,18 @@ namespace Azumi_Browser
             {
                 Current++;
                 WebPages.Add(Link);
+            }
+        }
+
+        private void Search()
+        {
+            if (currentBrowserShowing != null && AddressBar.Text != string.Empty)
+            {
+                currentBrowserShowing.Address = "https://www.google.com/search?q=" + AddressBar.Text;
+                if (AddressBar.Text.Contains("www."))
+                {
+                    currentBrowserShowing.Load(AddressBar.Text);
+                }
             }
         }
 
@@ -109,11 +125,11 @@ namespace Azumi_Browser
         }
 
         private void AddressBar_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                LoadWebPages(AddressBar.Text);
-            }
+        {            
+                if (e.Key == Key.Enter)
+                {
+                    Search();
+                }
         }
 
         public void AddressBar_GotFocus(object sender, RoutedEventArgs e)
@@ -138,6 +154,70 @@ namespace Azumi_Browser
         private void Button_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void AddTab_Click(object sender, RoutedEventArgs e)
+        {
+            TabItem tabItem = new TabItem();
+            ChromiumWebBrowser browser = new ChromiumWebBrowser();
+            browser.Name = "Browser_" + tabCount;
+            tabControl.Items.Add(tabItem);
+            tabItem.Name = "tab_" + tabCount;
+            tabCount++;
+            tabItem.Content = browser;
+            browser.Address = "https://www.google.com";
+
+            tabItem.Header = "Tab";
+            tabControl.SelectedItem = tabItem;
+            CurrentTabItem = tabItem;
+
+
+
+            currentBrowserShowing = browser;
+            browser.Loaded += FinishedLoadingWebPage;
+
+
+        }
+
+        private void FinishedLoadingWebPage(object sender, RoutedEventArgs e)
+        {
+            var sndr = sender as ChromiumWebBrowser;
+
+            if (CurrentTabItem != null)
+            {
+                string RemoveHttp = sndr.Address.Replace("http://www.", "");
+                string host = RemoveHttp.Replace("https://www.", "");
+                CurrentTabItem.Header = host;
+            }
+
+        }
+
+        private void Tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (tabControl.SelectedItem != null)
+            {
+                CurrentTabItem = tabControl.SelectedItem as TabItem;
+            }
+
+            if (CurrentTabItem != null)
+            {
+                currentBrowserShowing = CurrentTabItem.Content as ChromiumWebBrowser;
+            }
+            AddressBar.Text = currentBrowserShowing.Address;
+        }
+
+        private void removeButton_Click(object sender, RoutedEventArgs e)
+        {
+            tabControl.Items.Remove(CurrentTabItem);
+            if (tabCount < 1)
+            {
+                Close();
+            }
         }
     }
 }
